@@ -1036,18 +1036,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Delete announcement
-  async function deleteAnnouncement(id) {
-    if (!confirm("Are you sure you want to delete this announcement?")) {
-      return;
-    }
-    
-    formTitle.textContent = "Edit Announcement";
-    saveAnnouncementBtn.textContent = "Update Announcement";
-    cancelEditBtn.classList.remove("hidden");
-    
-    // Scroll to form
-    document.querySelector(".announcement-form-section").scrollIntoView({ behavior: "smooth" });
-  };
 
   // Delete announcement
   window.deleteAnnouncement = async function(id) {
