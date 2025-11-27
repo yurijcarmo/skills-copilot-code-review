@@ -5,7 +5,7 @@ Announcements endpoints for the High School Management System API
 from fastapi import APIRouter, HTTPException
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field, field_validator
 from bson import ObjectId
 from bson.errors import InvalidId
 
@@ -28,7 +28,7 @@ class AnnouncementCreate(BaseModel):
     def validate_message(cls, v: str) -> str:
         stripped = v.strip()
         if not stripped:
-            raise ValueError('Message cannot be empty or whitespace only')
+            raise ValueError('Message cannot be empty or contain only whitespace')
         return stripped
 
 
@@ -44,7 +44,7 @@ class AnnouncementUpdate(BaseModel):
             return v
         stripped = v.strip()
         if not stripped:
-            raise ValueError('Message cannot be empty or whitespace only')
+            raise ValueError('Message cannot be empty or contain only whitespace')
         return stripped
 
 
@@ -163,6 +163,9 @@ def update_announcement(announcement_id: str, announcement: AnnouncementUpdate, 
     if final_start and final_expiration and final_start > final_expiration:
         raise HTTPException(status_code=400, detail="Start date must be before expiration date")
     
+    # Validate expiration date is not in the past if being updated
+    if final_expiration and datetime.fromisoformat(final_expiration) < datetime.now():
+        raise HTTPException(status_code=400, detail="Expiration date cannot be in the past")
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update")
     
