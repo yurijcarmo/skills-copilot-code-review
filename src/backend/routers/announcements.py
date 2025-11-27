@@ -5,7 +5,7 @@ Announcements endpoints for the High School Management System API
 from fastapi import APIRouter, HTTPException
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator, Field
 from bson import ObjectId
 from bson.errors import InvalidId
 
@@ -18,16 +18,36 @@ router = APIRouter(
 
 
 class AnnouncementCreate(BaseModel):
-    message: str
+    message: str = Field(..., min_length=1, max_length=500)
     start_date: Optional[str] = None
     expiration_date: str
     created_by: str
 
+    @field_validator('message')
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        """Validate message is not empty or whitespace-only"""
+        stripped = v.strip()
+        if not stripped:
+            raise ValueError('Message cannot be empty or contain only whitespace')
+        return stripped
+
 
 class AnnouncementUpdate(BaseModel):
-    message: Optional[str] = None
+    message: Optional[str] = Field(default=None, min_length=1, max_length=500)
     start_date: Optional[str] = None
     expiration_date: Optional[str] = None
+
+    @field_validator('message')
+    @classmethod
+    def validate_message(cls, v: Optional[str]) -> Optional[str]:
+        """Validate message is not empty or whitespace-only when provided"""
+        if v is None:
+            return v
+        stripped = v.strip()
+        if not stripped:
+            raise ValueError('Message cannot be empty or contain only whitespace')
+        return stripped
 
 
 def verify_authenticated_user(username: str) -> Dict[str, Any]:
