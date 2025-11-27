@@ -1036,9 +1036,8 @@ document.addEventListener("DOMContentLoaded", () => {
     announcementsModal.classList.remove("show");
     setTimeout(() => {
       announcementsModal.classList.add("hidden");
-    }, 300);
+    }, 300); // Assuming a 300ms timeout for modal transition
   }
-
   // Edit announcement
   function editAnnouncement(id, announcement) {
     document.getElementById("edit-announcement-id").value = id;
