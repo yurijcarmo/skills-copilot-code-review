@@ -934,11 +934,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const currentDate = new Date().toISOString().split('T')[0];
+    // Use Date objects for robust comparison
+    const now = new Date();
     
     announcementsList.innerHTML = announcements.map(announcement => {
-      const isExpired = announcement.expiration_date < currentDate;
-      const isScheduled = announcement.start_date && announcement.start_date > currentDate;
+      const expirationDate = new Date(announcement.expiration_date);
+      const startDate = announcement.start_date ? new Date(announcement.start_date) : null;
+      const isExpired = expirationDate < now;
+      const isScheduled = startDate && startDate > now;
       const isActive = !isExpired && !isScheduled;
       
       let statusClass = "";
