@@ -90,8 +90,8 @@ def create_announcement(announcement: AnnouncementCreate) -> Dict[str, Any]:
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid expiration date format. Use YYYY-MM-DD.")
     current_dt = datetime.now()
-    if expiration_dt.date() < current_dt.date():
-        raise HTTPException(status_code=400, detail="Expiration date must be in the future")
+    if expiration_dt.date() <= current_dt.date():
+        raise HTTPException(status_code=400, detail="Expiration date must be at least tomorrow")
     
     # Validate start_date is before expiration_date if provided
     if announcement.start_date:
