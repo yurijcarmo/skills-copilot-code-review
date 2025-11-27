@@ -1008,6 +1008,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Reset announcement form to initial state
+  function resetAnnouncementForm() {
+    document.getElementById("edit-announcement-id").value = "";
+    document.getElementById("announcement-message").value = "";
+    document.getElementById("announcement-start-date").value = "";
+    document.getElementById("announcement-expiration-date").value = "";
+    
+    formTitle.textContent = "Create New Announcement";
+    saveAnnouncementBtn.textContent = "Save Announcement";
+    cancelEditBtn.classList.add("hidden");
+  }
+
   // Open announcements management modal
   function openAnnouncementsModal() {
     if (!currentUser) return;
@@ -1023,6 +1035,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeAnnouncementsModalHandler() {
     announcementsModal.classList.remove("show");
     setTimeout(() => {
+      announcementsModal.classList.add("hidden");
+    }, 300);
+  }
+
   // Edit announcement
   function editAnnouncement(id, announcement) {
     document.getElementById("edit-announcement-id").value = id;
