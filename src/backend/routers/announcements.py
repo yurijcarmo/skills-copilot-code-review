@@ -145,6 +145,9 @@ def update_announcement(announcement_id: str, announcement: AnnouncementUpdate, 
     if final_start and final_expiration and final_start > final_expiration:
         raise HTTPException(status_code=400, detail="Start date must be before expiration date")
     
+    # Validate expiration date is not in the past if being updated
+    if final_expiration and datetime.fromisoformat(final_expiration) < datetime.now():
+        raise HTTPException(status_code=400, detail="Expiration date cannot be in the past")
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update")
     
