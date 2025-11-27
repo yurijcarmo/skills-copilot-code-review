@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Authentication state
   let currentUser = null;
 
+  // Announcements state (for event delegation)
+  let allAnnouncementsData = [];
+
   // Time range mappings for the dropdown
   const timeRanges = {
     morning: { start: "06:00", end: "08:00" }, // Before school hours
@@ -929,6 +932,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Display announcements in the management modal
   function displayAnnouncementsList(announcements) {
+    // Store announcements data for event delegation
+    allAnnouncementsData = announcements;
+
     if (announcements.length === 0) {
       announcementsList.innerHTML = "<p class='no-announcements'>No announcements yet.</p>";
       return;
@@ -975,20 +981,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
     }).join("");
-
-    // Add event delegation for edit and delete buttons
-    announcementsList.addEventListener("click", (event) => {
-      if (event.target.classList.contains("edit-btn")) {
-        const announcementId = event.target.dataset.announcementId;
-        const announcement = announcements.find(a => a._id === announcementId);
-        if (announcement) {
-          editAnnouncement(announcementId, announcement);
-        }
-      } else if (event.target.classList.contains("delete-btn")) {
-        const announcementId = event.target.dataset.announcementId;
-        deleteAnnouncement(announcementId);
-      }
-    });
   }
 
   // Helper function to escape HTML
@@ -1141,6 +1133,20 @@ document.addEventListener("DOMContentLoaded", () => {
   manageAnnouncementsButton.addEventListener("click", openAnnouncementsModal);
   closeAnnouncementsModal.addEventListener("click", closeAnnouncementsModalHandler);
   cancelEditBtn.addEventListener("click", resetAnnouncementForm);
+
+  // Event delegation for edit and delete buttons in announcements list (set up once)
+  announcementsList.addEventListener("click", (event) => {
+    if (event.target.classList.contains("edit-btn")) {
+      const announcementId = event.target.dataset.announcementId;
+      const announcement = allAnnouncementsData.find(a => a._id === announcementId);
+      if (announcement) {
+        editAnnouncement(announcementId, announcement);
+      }
+    } else if (event.target.classList.contains("delete-btn")) {
+      const announcementId = event.target.dataset.announcementId;
+      deleteAnnouncement(announcementId);
+    }
+  });
 
   // Close announcements modal when clicking outside
   window.addEventListener("click", (event) => {
