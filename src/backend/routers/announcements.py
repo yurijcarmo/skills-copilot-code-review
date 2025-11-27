@@ -100,7 +100,7 @@ def create_announcement(announcement: AnnouncementCreate) -> Dict[str, Any]:
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid start date format. Use YYYY-MM-DD.")
         if start_dt.date() > expiration_dt.date():
-            raise HTTPException(status_code=400, detail="Start date must be before expiration date")
+            raise HTTPException(status_code=400, detail="Start date must not be after expiration date")
     
     announcement_data = {
         "message": announcement.message,
